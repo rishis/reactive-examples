@@ -68,4 +68,17 @@ class PersonRepositoryImplTest {
             });
         });
     }
+
+    @Test
+    void testFilter() {
+        Flux<Person> personFlux = personRepository.findAll();
+        Integer id = 20;
+        Mono<Person> personMono = personFlux.filter(person -> person.getId() == id).single();
+        personMono.doOnError(throwable -> {
+            System.out.println("inside doOnError"+throwable);
+        }).onErrorReturn(Person.builder().build()).subscribe(person -> {
+            System.out.println("Filter -->"+person);
+        });
+
+    }
 }
